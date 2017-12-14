@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Lastfm;
+use App\TopTracks\LastfmUser;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -12,7 +12,7 @@ class HomeController extends Controller
     }
 
     public function lastfm(Request $request) {
-    	$lastfm = new Lastfm($request->input('username'));
+    	$lastfm = new LastfmUser($request->input('username', ''));
     	return $lastfm->getTopTracks();
     }
 }

@@ -1,10 +1,11 @@
 <?php
 
-namespace App;
+namespace App\TopTracks;
 
+use App\Lastfm\LastfmInterface;
 use GuzzleHttp\Client;
 
-class Lastfm {
+class LastfmUser implements TopTracksInterface {
 
 	private $client;
 	private $username;
@@ -24,9 +25,19 @@ class Lastfm {
 
 		// $range = $this->findRange(json_decode($weekly_chart_list->getBody()->getContents())->weeklychartlist->chart);
 
-		$result = $this->client->get('?api_key='.config('lastfm.api_key').'&format=json&method=user.getWeeklyTrackChart&user='.$this->username.'&from='.config('lastfm.'.$this->era)[0].'&to='.config('lastfm.'.$this->era)[1]);
+		$response = $this->client->get('?api_key='.config('lastfm.api_key').'&format=json&method=user.getWeeklyTrackChart&user='.$this->username.'&from='.config('lastfm.'.$this->era)[0].'&to='.config('lastfm.'.$this->era)[1]);
 
-		return array_slice(json_decode($result->getBody()->getContents())->weeklytrackchart->track, 0, 30);
+		$top_tracks = json_decode($response->getBody());
+
+		if (property_exists($top_tracks, 'error')) {
+			return $top_tracks->message;
+		}
+
+		return $this->limitResponse($top_tracks, 30);
+	}
+
+	private function limitResponse($top_tracks, $limit) {
+		return array_slice($top_tracks->weeklytrackchart->track, 0, $limit);
 	}
 
 	// Don't need this since full date ranges work for getWeeklyTrackChart
