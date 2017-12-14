@@ -20,8 +20,7 @@ class Lastfm {
 	}
 	
 	public function getTopTracks() {
-		$weekly_chart_list = $this->client->get('?api_key='.config('lastfm.api_key').'&format=json&method=user.getWeeklyChartList&user='.$this->username);
-		return $weekly_chart_list;
+		// $weekly_chart_list = $this->client->get('?api_key='.config('lastfm.api_key').'&format=json&method=user.getWeeklyChartList&user='.$this->username);
 
 		// $range = $this->findRange(json_decode($weekly_chart_list->getBody()->getContents())->weeklychartlist->chart);
 
@@ -30,6 +29,7 @@ class Lastfm {
 		return array_slice(json_decode($result->getBody()->getContents())->weeklytrackchart->track, 0, 30);
 	}
 
+	// Don't need this since full date ranges work for getWeeklyTrackChart
 	private function findRange($weekly_chart_list) {
 		$range = [
 			'from' => '',
