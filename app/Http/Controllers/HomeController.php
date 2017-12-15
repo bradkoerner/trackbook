@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\TopTracks\BillboardGlobal;
 use App\TopTracks\LastfmUser;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,13 @@ class HomeController extends Controller
     }
 
     public function lastfm(Request $request) {
-    	$lastfm = new LastfmUser($request->input('username', ''));
-    	return $lastfm->getTopTracks();
+        $username = $request->input('username');
+    	if ($username != '') {
+    		$service = new LastfmUser($request->input('username'), '');
+    	} else {
+    		$service = new BillboardGlobal('');
+    	}
+    	
+    	return $service->getTopTracks();
     }
 }

@@ -11,9 +11,9 @@ class LastfmUser implements TopTracksInterface {
 	private $username;
 	private $era;
 
-	public function __construct($username) {
+	public function __construct($username, $era) {
 		$this->username = $username;
-		$this->era      = 'semester.2012.fall';
+		$this->era      = 'semester.2012.fall.epoch';//$era.'.epoch';
 		$this->client = new Client([
 			'base_uri' => 'http://ws.audioscrobbler.com/2.0/',
 			'timeout'  => 2.0
@@ -25,7 +25,7 @@ class LastfmUser implements TopTracksInterface {
 
 		// $range = $this->findRange(json_decode($weekly_chart_list->getBody()->getContents())->weeklychartlist->chart);
 
-		$response = $this->client->get('?api_key='.config('lastfm.api_key').'&format=json&method=user.getWeeklyTrackChart&user='.$this->username.'&from='.config('lastfm.'.$this->era)[0].'&to='.config('lastfm.'.$this->era)[1]);
+		$response = $this->client->get('?api_key='.config('lastfm.api_key').'&format=json&method=user.getWeeklyTrackChart&user='.$this->username.'&from='.config('times.'.$this->era)[0].'&to='.config('times.'.$this->era)[1]);
 
 		$top_tracks = json_decode($response->getBody());
 
